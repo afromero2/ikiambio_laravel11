@@ -4,7 +4,7 @@
 @section('page_title','Inicio')
 
 @section('content')
-<div class="tiles"> HOLA A TODOS: REGISTRAR TIPOS
+<div class="tiles"> HOLA A TODOS: REGISTRAR LICENSES
   <a class="tile" href="{{ route('ikiambio-users.index') }}">
     <div class="tile-icon">@include('svg.users')</div>
     <div class="tile-title">Usuarios</div>

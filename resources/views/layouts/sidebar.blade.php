@@ -46,11 +46,13 @@
               @include('svg.check')
               <span>Registrar tipos</span>
             </a>
-            <a class="item" href="#">
+            <a class="item {{ request()->routeIs('record-level.licenses.*') ? 'active' : '' }}"
+              href="{{ route('record-level.licenses.index') }}">
               @include('svg.check')
               <span>Registrar licenses</span>
             </a>
-            <a class="item" href="#">
+            <a class="item {{ request()->routeIs('record-level.rights-holder.*') ? 'active' : '' }}"
+              href="{{ route('record-level.rights-holder.index') }}">
               @include('svg.check')
               <span>Registrar rightsHolder</span>
             </a>

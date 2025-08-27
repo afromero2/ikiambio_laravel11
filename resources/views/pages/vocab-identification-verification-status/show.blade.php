@@ -16,8 +16,8 @@
     </dl>
 
     <div style="margin-top:12px;">
-      <a class="btn" href="{{ route('vocab-identification-verificationStatus.edit', $item) }}">Editar</a>
-      <a class="btn" href="{{ route('vocab-identification-verificationStatus.index') }}">Volver</a>
+      <a class="btn" href="{{ route('vocab-identification-verification-status.edit', $item) }}">Editar</a>
+      <a class="btn" href="{{ route('vocab-identification-verification-status.index') }}">Volver</a>
     </div>
   </div>
 </div>

@@ -12,7 +12,7 @@
   </div>
 @endif
 
-<form method="POST" action="{{ route('vocab-taxon-taxonomicStatus.update', $item) }}" class="card card-body">
+<form method="POST" action="{{ route('vocab-taxon-taxonomic-status.update', $item) }}" class="card card-body">
   @csrf @method('PUT')
 
   <div class="form-grid">
@@ -30,7 +30,7 @@
 
   <div style="margin-top:12px;">
     <button class="btn primary">Actualizar</button>
-    <a href="{{ route('vocab-taxon-taxonomicStatus.index') }}" class="btn">Cancelar</a>
+    <a href="{{ route('vocab-taxon-taxonomic-status.index') }}" class="btn">Cancelar</a>
   </div>
 </form>
 @endsection

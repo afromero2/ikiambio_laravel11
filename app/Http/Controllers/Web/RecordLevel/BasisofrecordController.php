@@ -14,7 +14,7 @@ class BasisOfRecordController extends Controller
 
     public function index()
     {
-        $items = BasisOfRecord::orderByDesc('basisOfRecord_id')->paginate(15);
+        $items = BasisOfRecord::orderByDesc('basisofrecord_id')->paginate(15);
         return view('pages.vocab-record-level-basis-of-record.index', compact('items'));
     }
 

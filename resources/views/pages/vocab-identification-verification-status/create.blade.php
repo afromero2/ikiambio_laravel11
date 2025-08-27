@@ -1,8 +1,8 @@
 @extends('layouts.sidebar')
-@section('page_title','Editar — Vocab identification verificationstatus')
+@section('page_title','Nuevo — Vocab identification verificationstatus')
 
 @section('content')
-<h1 class="h4" style="margin:0 0 12px 0;">Editar — Vocab identification verificationstatus #{ $item->vocab_identification_verificationStatus_id }</h1>
+<h1 class="h4" style="margin:0 0 12px 0;">Nuevo — Vocab identification verificationstatus</h1>
 
 @if($errors->any())
   <div class="alert alert-danger" style="border:1px solid #fecaca;background:#fee2e2;color:#7f1d1d;">
@@ -12,8 +12,8 @@
   </div>
 @endif
 
-<form method="POST" action="{{ route('vocab-identification-verificationStatus.update', $item) }}" class="card card-body">
-  @csrf @method('PUT')
+<form method="POST" action="{{ route('vocab-identification-verification-status.store') }}" class="card card-body">
+  @csrf
 
   <div class="form-grid">
 
@@ -29,8 +29,8 @@
   </div>
 
   <div style="margin-top:12px;">
-    <button class="btn primary">Actualizar</button>
-    <a href="{{ route('vocab-identification-verificationStatus.index') }}" class="btn">Cancelar</a>
+    <button class="btn primary">Guardar</button>
+    <a href="{{ route('vocab-identification-verification-status.index') }}" class="btn">Cancelar</a>
   </div>
 </form>
 @endsection

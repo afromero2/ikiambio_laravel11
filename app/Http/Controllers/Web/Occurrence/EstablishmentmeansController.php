@@ -14,7 +14,7 @@ class EstablishmentMeansController extends Controller
 
     public function index()
     {
-        $items = EstablishmentMeans::orderByDesc('establishmentMeans_id')->paginate(15);
+        $items = EstablishmentMeans::orderByDesc('vocab_occurrence_establishmentMeans')->paginate(15);
         return view('pages.vocab-occurrence-establishment-means.index', compact('items'));
     }
 

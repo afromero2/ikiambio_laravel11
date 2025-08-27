@@ -14,7 +14,7 @@ class LifeStageController extends Controller
 
     public function index()
     {
-        $items = LifeStage::orderByDesc('lifeStage_id')->paginate(15);
+        $items = LifeStage::orderByDesc('lifestage_id')->paginate(15);
         return view('pages.vocab-occurrence-life-stage.index', compact('items'));
     }
 

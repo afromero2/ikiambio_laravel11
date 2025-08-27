@@ -1,12 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+/* use App\Http\Controllers\Web\IkiambioUserController as IkiambioUserWeb; */
+use App\Http\Controllers\Web\IkiambioUserController; 
 
-// =================== CONTROLADORES ===================
-// Home / Ejemplo
-use App\Http\Controllers\Web\IkiambioUserController;
+// Home
+Route::get('/', fn () => view('home'))->name('home');
 
-// Record Level
+// CRUD ejemplo previo
+Route::resource('ikiambio-users', IkiambioUserController::class)
+    ->parameters(['ikiambio-users' => 'ikiambioUser']);
+
+// ===================== RECORD LEVEL =====================
 use App\Http\Controllers\Web\RecordLevel\TypeController;
 use App\Http\Controllers\Web\RecordLevel\LicenseController;
 use App\Http\Controllers\Web\RecordLevel\RightsHolderController;
@@ -18,44 +23,7 @@ use App\Http\Controllers\Web\RecordLevel\CollectionCodeController;
 use App\Http\Controllers\Web\RecordLevel\OwnerInstitutionCodeController;
 use App\Http\Controllers\Web\RecordLevel\BasisOfRecordController;
 
-// Occurrence
-use App\Http\Controllers\Web\Occurrence\OrganismQuantityTypeController;
-use App\Http\Controllers\Web\Occurrence\SexController;
-use App\Http\Controllers\Web\Occurrence\LifeStageController;
-use App\Http\Controllers\Web\Occurrence\ReproductiveConditionController;
-use App\Http\Controllers\Web\Occurrence\EstablishmentMeansController;
-use App\Http\Controllers\Web\Occurrence\DispositionController;
-
-// Taxon
-use App\Http\Controllers\Web\Taxon\TaxonRankController;
-use App\Http\Controllers\Web\Taxon\TaxonomicStatusController;
-
-// Identification
-use App\Http\Controllers\Web\Identification\TypeStatusController;
-use App\Http\Controllers\Web\Identification\VerificationStatusController;
-
-// Location
-use App\Http\Controllers\Web\Location\ContinentController;
-use App\Http\Controllers\Web\Location\VerbatimSrsController;
-use App\Http\Controllers\Web\Location\GeorefStatusController;
-
-// Tblprimers (vocab)
-use App\Http\Controllers\Web\Tblprimers\PrimerDirectionController;
-
-// Tblprimers F/R (no vocab)
-use App\Http\Controllers\TblprimersfController;
-use App\Http\Controllers\TblprimersrController;
-
-
-// ======================= HOME =======================
-Route::get('/', fn () => view('home'))->name('home');
-
-// CRUD ejemplo previo
-Route::resource('ikiambio-users', IkiambioUserController::class)
-    ->parameters(['ikiambio-users' => 'ikiambioUser']);
-
-
-// ===================== RECORD LEVEL =====================
+/* ---- 1) Rutas compatibles con scaffold (base = nombre tabla en kebab) ---- */
 Route::resource('vocab-record-level-type', TypeController::class)
     ->names('vocab-record-level-type')
     ->parameters(['vocab-record-level-type' => 'type']);
@@ -96,8 +64,15 @@ Route::resource('vocab-record-level-basis-of-record', BasisOfRecordController::c
     ->names('vocab-record-level-basis-of-record')
     ->parameters(['vocab-record-level-basis-of-record' => 'basisOfRecord']);
 
-
 // ======================= OCCURRENCE ======================
+use App\Http\Controllers\Web\Occurrence\OrganismQuantityTypeController;
+use App\Http\Controllers\Web\Occurrence\SexController;
+use App\Http\Controllers\Web\Occurrence\LifeStageController;
+use App\Http\Controllers\Web\Occurrence\ReproductiveConditionController;
+use App\Http\Controllers\Web\Occurrence\EstablishmentMeansController;
+use App\Http\Controllers\Web\Occurrence\DispositionController;
+
+/* ---- 1) Compatibles con scaffold (base = nombre tabla en kebab) ---- */
 Route::resource('vocab-occurrence-organism-quantity-type', OrganismQuantityTypeController::class)
     ->names('vocab-occurrence-organism-quantity-type')
     ->parameters(['vocab-occurrence-organism-quantity-type' => 'organismQuantityType']);
@@ -123,7 +98,10 @@ Route::resource('vocab-occurrence-disposition', DispositionController::class)
     ->parameters(['vocab-occurrence-disposition' => 'disposition']);
 
 
-// ======================== TAXON ========================
+    // ======================== TAXON ========================
+use App\Http\Controllers\Web\Taxon\TaxonRankController;
+use App\Http\Controllers\Web\Taxon\TaxonomicStatusController;
+
 Route::resource('vocab-taxon-taxon-rank', TaxonRankController::class)
     ->names('vocab-taxon-taxon-rank')
     ->parameters(['vocab-taxon-taxon-rank' => 'taxonRank']);
@@ -134,6 +112,9 @@ Route::resource('vocab-taxon-taxonomic-status', TaxonomicStatusController::class
 
 
 // ==================== IDENTIFICATION ===================
+use App\Http\Controllers\Web\Identification\TypeStatusController;
+use App\Http\Controllers\Web\Identification\VerificationStatusController;
+
 Route::resource('vocab-identification-type-status', TypeStatusController::class)
     ->names('vocab-identification-type-status')
     ->parameters(['vocab-identification-type-status' => 'typeStatus']);
@@ -144,6 +125,10 @@ Route::resource('vocab-identification-verification-status', VerificationStatusCo
 
 
 // ======================= LOCATION ======================
+use App\Http\Controllers\Web\Location\ContinentController;
+use App\Http\Controllers\Web\Location\VerbatimSrsController;
+use App\Http\Controllers\Web\Location\GeorefStatusController;
+
 Route::resource('vocab-location-continent', ContinentController::class)
     ->names('vocab-location-continent')
     ->parameters(['vocab-location-continent' => 'continent']);
@@ -158,15 +143,22 @@ Route::resource('vocab-location-georef-status', GeorefStatusController::class)
 
 
 // ===================== TBLPRIMERS ======================
+use App\Http\Controllers\Web\Tblprimers\PrimerDirectionController;
+
 Route::resource('vocab-tblprimers-primer-direction', PrimerDirectionController::class)
     ->names('vocab-tblprimers-primer-direction')
     ->parameters(['vocab-tblprimers-primer-direction' => 'primerDirection']);
 
-// ===== Tblprimers F/R (fuera de vocab) =====
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+/* use App\Http\Controllers\TblprimersfController;
+use App\Http\Controllers\TblprimersrController;
+
 Route::resource('tblprimersf', TblprimersfController::class)
     ->names('tblprimersf')
     ->parameters(['tblprimersf' => 'tblprimersf']);
 
 Route::resource('tblprimersr', TblprimersrController::class)
     ->names('tblprimersr')
-    ->parameters(['tblprimersr' => 'tblprimersr']);
+    ->parameters(['tblprimersr' => 'tblprimersr']); */

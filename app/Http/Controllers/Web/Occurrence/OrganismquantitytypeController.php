@@ -12,9 +12,9 @@ class OrganismQuantityTypeController extends Controller
 {
     use WrapsTransactions;
 
-    public function index()
+    public function index()                          
     {
-        $items = OrganismQuantityType::orderByDesc('organismQuantityType_id')->paginate(15);
+        $items = OrganismQuantityType::orderByDesc('oqtype_id')->paginate(15);
         return view('pages.vocab-occurrence-organism-quantity-type.index', compact('items'));
     }
 

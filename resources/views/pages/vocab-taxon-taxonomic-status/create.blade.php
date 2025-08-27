@@ -1,8 +1,8 @@
 @extends('layouts.sidebar')
-@section('page_title','Nuevo — Vocab taxon taxonrank')
+@section('page_title','Nuevo — Vocab taxon taxonomicstatus')
 
 @section('content')
-<h1 class="h4" style="margin:0 0 12px 0;">Nuevo — Vocab taxon taxonrank</h1>
+<h1 class="h4" style="margin:0 0 12px 0;">Nuevo — Vocab taxon taxonomicstatus</h1>
 
 @if($errors->any())
   <div class="alert alert-danger" style="border:1px solid #fecaca;background:#fee2e2;color:#7f1d1d;">
@@ -12,14 +12,14 @@
   </div>
 @endif
 
-<form method="POST" action="{{ route('vocab-taxon-taxonRank.store') }}" class="card card-body">
+<form method="POST" action="{{ route('vocab-taxon-taxonomic-status.store') }}" class="card card-body">
   @csrf
 
   <div class="form-grid">
 
     <div>
-      <label class="label">Taxonrank value *</label>
-      <input type="text" name="taxonRank_value" value="{{ old('taxonRank_value', isset($item)? $item->taxonRank_value : '') }}" class="input">
+      <label class="label">Taxonomicstatus value *</label>
+      <input type="text" name="taxonomicStatus_value" value="{{ old('taxonomicStatus_value', isset($item)? $item->taxonomicStatus_value : '') }}" class="input">
     </div>
 
     <div>
@@ -30,7 +30,7 @@
 
   <div style="margin-top:12px;">
     <button class="btn primary">Guardar</button>
-    <a href="{{ route('vocab-taxon-taxonRank.index') }}" class="btn">Cancelar</a>
+    <a href="{{ route('vocab-taxon-taxonomic-status.index') }}" class="btn">Cancelar</a>
   </div>
 </form>
 @endsection

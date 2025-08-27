@@ -14,7 +14,7 @@ class OwnerInstitutionCodeController extends Controller
 
     public function index()
     {
-        $items = OwnerInstitutionCode::orderByDesc('ownerInstitutionCode_id')->paginate(15);
+        $items = OwnerInstitutionCode::orderByDesc('ownerinstitutioncode_id')->paginate(15);
         return view('pages.vocab-record-level-owner-institution-code.index', compact('items'));
     }
 

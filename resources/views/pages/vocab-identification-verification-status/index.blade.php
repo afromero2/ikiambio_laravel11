@@ -4,7 +4,7 @@
 @section('content')
 <div class="d-flex" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
   <h1 style="margin:0;font-size:1.25rem;">Vocab identification verificationstatus</h1>
-  <a href="{{ route('vocab-identification-verificationStatus.create') }}" class="btn primary">Nuevo</a>
+  <a href="{{ route('vocab-identification-verification-status.create') }}" class="btn primary">Nuevo</a>
 </div>
 
 <div class="card">
@@ -26,9 +26,9 @@
             <td>{{ $item->identificationVerificationStatus_value }}</td>
             <td>{{ $item->description }}</td>
             <td style="text-align:right;">
-              <a class="btn ghost" href="{{ route('vocab-identification-verificationStatus.show', $item) }}">Ver</a>
-              <a class="btn ghost warn" href="{{ route('vocab-identification-verificationStatus.edit', $item) }}">Editar</a>
-              <form style="display:inline" method="POST" action="{{ route('vocab-identification-verificationStatus.destroy', $item) }}" onsubmit="return confirm('¿Eliminar?')">
+              <a class="btn ghost" href="{{ route('vocab-identification-verification-status.show', $item) }}">Ver</a>
+              <a class="btn ghost warn" href="{{ route('vocab-identification-verification-status.edit', $item) }}">Editar</a>
+              <form style="display:inline" method="POST" action="{{ route('vocab-identification-verification-status.destroy', $item) }}" onsubmit="return confirm('¿Eliminar?')">
                 @csrf @method('DELETE')
                 <button class="btn ghost danger" type="submit">Eliminar</button>
               </form>

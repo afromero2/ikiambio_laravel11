@@ -11,7 +11,7 @@
   <aside class="sidebar">
     <div class="brand">
       <img src="{{ asset('favicon.ico') }}" alt="logo" class="brand-logo">
-      <div class="brand-title">UTPL - VIRTOPSIA</div>
+      <div class="brand-title">IKIMBIA</div>
     </div>
 
     <nav class="menu">
@@ -19,6 +19,11 @@
         @include('svg.users')
         <span>Usuarios</span>
       </a>
+
+      <span class="item {{ request()->routeIs('ikiambio-users.*') ? 'active' : '' }}" href="#">
+        @include('svg.users')
+        <span>Registro vocabs</span>
+      </span>
 
       {{-- ==================== RECORD LEVEL ==================== --}}
       <div class="group collapsible {{ request()->routeIs('vocab-record-level-*') ? 'open' : '' }}" data-key="record-level">

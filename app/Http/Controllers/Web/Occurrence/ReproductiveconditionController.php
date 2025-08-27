@@ -14,7 +14,7 @@ class ReproductiveConditionController extends Controller
 
     public function index()
     {
-        $items = ReproductiveCondition::orderByDesc('reproductiveCondition_id')->paginate(15);
+        $items = ReproductiveCondition::orderByDesc('vocab_occurrence_reproductiveCondition')->paginate(15);
         return view('pages.vocab-occurrence-reproductive-condition.index', compact('items'));
     }
 

@@ -1,51 +1,69 @@
 <?php
 
-namespace App\Http\Controllers\Web;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Tblprimersr;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class TblprimersrController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
-        $items = Tblprimersr::orderByDesc('idPrimers')->paginate(15);
-        return view('pages/TblPrimersR/index', compact('items'));
+        $items = Tblprimersr::orderByDesc('id')->paginate(15);
+        return view('pages.tblprimersr.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/TblPrimersR/create');
+        return view('pages.tblprimersr.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Tblprimersr::create($data);
-        return redirect()->route('TblPrimersR.index')->with('ok','Creado');
+
+        try {
+            $item = $this->tx(fn () => Tblprimersr::create($data));
+            return redirect()->route('tblprimersr.index')->with('ok', 'Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
     public function show(Tblprimersr $tblprimersr)
     {
-        return view('pages/TblPrimersR/show', ['item' => $tblprimersr]);
+        return view('pages.tblprimersr.show', ['item' => $tblprimersr]);
     }
 
     public function edit(Tblprimersr $tblprimersr)
     {
-        return view('pages/TblPrimersR/edit', ['item' => $tblprimersr]);
+        return view('pages.tblprimersr.edit', ['item' => $tblprimersr]);
     }
 
     public function update(Request $request, Tblprimersr $tblprimersr)
     {
         $data = $request->all();
-        $tblprimersr->update($data);
-        return redirect()->route('TblPrimersR.index')->with('ok','Actualizado');
+
+        try {
+            $this->tx(fn () => $tblprimersr->update($data));
+            return redirect()->route('tblprimersr.index')->with('ok', 'Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
     public function destroy(Tblprimersr $tblprimersr)
     {
-        $tblprimersr->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $tblprimersr->delete());
+            return back()->with('ok', 'Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

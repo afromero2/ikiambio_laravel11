@@ -3,49 +3,67 @@
 namespace App\Http\Controllers\Web\Occurrence;
 
 use App\Http\Controllers\Controller;
-use App\Models\Vocab\Occurrence\Lifestage;
+use App\Http\Controllers\Concerns\WrapsTransactions;
+use App\Models\Vocab\Occurrence\LifeStage;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
-class LifestageController extends Controller
+class LifeStageController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
-        $items = Lifestage::orderByDesc('lifestage_id')->paginate(15);
-        return view('pages/vocab-occurrence-lifeStage/index', compact('items'));
+        $items = LifeStage::orderByDesc('lifeStage_id')->paginate(15);
+        return view('pages.vocab-occurrence-life-stage.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/vocab-occurrence-lifeStage/create');
+        return view('pages.vocab-occurrence-life-stage.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Lifestage::create($data);
-        return redirect()->route('vocab-occurrence-lifeStage.index')->with('ok','Creado');
+
+        try {
+            $item = $this->tx(fn () => LifeStage::create($data));
+            return redirect()->route('vocab-occurrence-life-stage.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
-    public function show(Lifestage $lifestage)
+    public function show(LifeStage $lifeStage)
     {
-        return view('pages/vocab-occurrence-lifeStage/show', ['item' => $lifestage]);
+        return view('pages.vocab-occurrence-life-stage.show', ['item' => $lifeStage]);
     }
 
-    public function edit(Lifestage $lifestage)
+    public function edit(LifeStage $lifeStage)
     {
-        return view('pages/vocab-occurrence-lifeStage/edit', ['item' => $lifestage]);
+        return view('pages.vocab-occurrence-life-stage.edit', ['item' => $lifeStage]);
     }
 
-    public function update(Request $request, Lifestage $lifestage)
+    public function update(Request $request, LifeStage $lifeStage)
     {
         $data = $request->all();
-        $lifestage->update($data);
-        return redirect()->route('vocab-occurrence-lifeStage.index')->with('ok','Actualizado');
+
+        try {
+            $this->tx(fn () => $lifeStage->update($data));
+            return redirect()->route('vocab-occurrence-life-stage.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
-    public function destroy(Lifestage $lifestage)
+    public function destroy(LifeStage $lifeStage)
     {
-        $lifestage->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $lifeStage->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

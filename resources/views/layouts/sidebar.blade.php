@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="es">
 <head>
@@ -16,101 +15,180 @@
     </div>
 
     <nav class="menu">
-  <a class="item {{ request()->routeIs('ikiambio-users.*') ? 'active' : '' }}" href="{{ route('ikiambio-users.index') }}">
-    @include('svg.users')
-    <span>Usuarios</span>
-  </a>
+      <a class="item {{ request()->routeIs('ikiambio-users.*') ? 'active' : '' }}" href="{{ route('ikiambio-users.index') }}">
+        @include('svg.users')
+        <span>Usuarios</span>
+      </a>
 
-  {{-- ==================== RECORD LEVEL ==================== --}}
-  <div class="group collapsible {{ request()->routeIs('record-level.*') ? 'open' : '' }}" data-key="record-level">
-    <button class="group-header" type="button">
-      <span>RECORD LEVEL</span>
-      <span class="chev" aria-hidden="true"></span>
-    </button>
-    <div class="group-items">
-      <a class="item {{ request()->routeIs('record-level.types.*') ? 'active' : '' }}" href="{{ route('record-level.types.index') }}">
-        @include('svg.check')
-        <span>Registrar tipos</span>
-      </a>
-      <a class="item {{ request()->routeIs('record-level.licenses.*') ? 'active' : '' }}" href="{{ route('record-level.licenses.index') }}">
-        @include('svg.check')
-        <span>Registrar licenses</span>
-      </a>
-      <a class="item {{ request()->routeIs('record-level.rights-holder.*') ? 'active' : '' }}" href="{{ route('record-level.rights-holder.index') }}">
-        @include('svg.check')
-        <span>Registrar rightsHolder</span>
-      </a>
-      <a class="item {{ request()->routeIs('record-level.access-rights.*') ? 'active' : '' }}" href="{{ route('record-level.access-rights.index') }}">
-        @include('svg.check')
-        <span>Registrar accessRights</span>
-      </a>
-      <a class="item {{ request()->routeIs('record-level.institution-id.*') ? 'active' : '' }}" href="{{ route('record-level.institution-id.index') }}">
-        @include('svg.check')
-        <span>Registrar institutionID</span>
-      </a>
-      <a class="item {{ request()->routeIs('record-level.collection-id.*') ? 'active' : '' }}" href="{{ route('record-level.collection-id.index') }}">
-        @include('svg.check')
-        <span>CollectionID</span>
-      </a>
-      <a class="item {{ request()->routeIs('record-level.institution-code.*') ? 'active' : '' }}" href="{{ route('record-level.institution-code.index') }}">
-        @include('svg.check')
-        <span>InstitutionCode</span>
-      </a>
-      <a class="item {{ request()->routeIs('record-level.collection-code.*') ? 'active' : '' }}" href="{{ route('record-level.collection-code.index') }}">
-        @include('svg.check')
-        <span>CollectionCode</span>
-      </a>
-      <a class="item {{ request()->routeIs('record-level.owner-institution-code.*') ? 'active' : '' }}" href="{{ route('record-level.owner-institution-code.index') }}">
-        @include('svg.check')
-        <span>OwnerInstitutionCode</span>
-      </a>
-      <a class="item {{ request()->routeIs('record-level.basis-of-record.*') ? 'active' : '' }}" href="{{ route('record-level.basis-of-record.index') }}">
-        @include('svg.check')
-        <span>BasisOfRecord</span>
-      </a>
-    </div>
-  </div>
+      {{-- ==================== RECORD LEVEL ==================== --}}
+      <div class="group collapsible {{ request()->routeIs('vocab-record-level-*') ? 'open' : '' }}" data-key="record-level">
+        <button class="group-header" type="button">
+          <span>RECORD LEVEL</span>
+          <span class="chev" aria-hidden="true"></span>
+        </button>
+        <div class="group-items">
+          <a class="item {{ request()->routeIs('vocab-record-level-type.*') ? 'active' : '' }}" href="{{ route('vocab-record-level-type.index') }}">
+            @include('svg.check') <span>Registrar tipos</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-record-level-license.*') ? 'active' : '' }}" href="{{ route('vocab-record-level-license.index') }}">
+            @include('svg.check') <span>Registrar licenses</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-record-level-rights-holder.*') ? 'active' : '' }}" href="{{ route('vocab-record-level-rights-holder.index') }}">
+            @include('svg.check') <span>Registrar rightsHolder</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-record-level-access-rights.*') ? 'active' : '' }}" href="{{ route('vocab-record-level-access-rights.index') }}">
+            @include('svg.check') <span>Registrar accessRights</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-record-level-institution-id.*') ? 'active' : '' }}" href="{{ route('vocab-record-level-institution-id.index') }}">
+            @include('svg.check') <span>Registrar institutionID</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-record-level-collection-id.*') ? 'active' : '' }}" href="{{ route('vocab-record-level-collection-id.index') }}">
+            @include('svg.check') <span>CollectionID</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-record-level-institution-code.*') ? 'active' : '' }}" href="{{ route('vocab-record-level-institution-code.index') }}">
+            @include('svg.check') <span>InstitutionCode</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-record-level-collection-code.*') ? 'active' : '' }}" href="{{ route('vocab-record-level-collection-code.index') }}">
+            @include('svg.check') <span>CollectionCode</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-record-level-owner-institution-code.*') ? 'active' : '' }}" href="{{ route('vocab-record-level-owner-institution-code.index') }}">
+            @include('svg.check') <span>OwnerInstitutionCode</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-record-level-basis-of-record.*') ? 'active' : '' }}" href="{{ route('vocab-record-level-basis-of-record.index') }}">
+            @include('svg.check') <span>BasisOfRecord</span>
+          </a>
+        </div>
+      </div>
 
-  {{-- ====================== OCCURRENCE ===================== --}}
-  <div class="group collapsible {{ request()->routeIs('occurrence.*') ? 'open' : '' }}" data-key="occurrence">
-    <button class="group-header" type="button">
-      <span>OCCURRENCE</span>
-      <span class="chev" aria-hidden="true"></span>
-    </button>
-    <div class="group-items">
-      <a class="item {{ request()->routeIs('occurrence.organism-quantity-type.*') ? 'active' : '' }}" href="{{ route('occurrence.organism-quantity-type.index') }}">
-        @include('svg.check')
-        <span>organismQuantityType</span>
-      </a>
-      <a class="item {{ request()->routeIs('occurrence.sex.*') ? 'active' : '' }}" href="{{ route('occurrence.sex.index') }}">
-        @include('svg.check')
-        <span>Sex</span>
-      </a>
-      <a class="item {{ request()->routeIs('occurrence.life-stage.*') ? 'active' : '' }}" href="{{ route('occurrence.life-stage.index') }}">
-        @include('svg.check')
-        <span>LifeStage</span>
-      </a>
-      <a class="item {{ request()->routeIs('occurrence.reproductive-condition.*') ? 'active' : '' }}" href="{{ route('occurrence.reproductive-condition.index') }}">
-        @include('svg.check')
-        <span>ReproductiveCondition</span>
-      </a>
-      <a class="item {{ request()->routeIs('occurrence.establishment-means.*') ? 'active' : '' }}" href="{{ route('occurrence.establishment-means.index') }}">
-        @include('svg.check')
-        <span>EstablishmentMeans</span>
-      </a>
-      <a class="item {{ request()->routeIs('occurrence.disposition.*') ? 'active' : '' }}" href="{{ route('occurrence.disposition.index') }}">
-        @include('svg.check')
-        <span>Disposition</span>
-      </a>
-    </div>
-  </div>
+      {{-- ====================== OCCURRENCE ===================== --}}
+      <div class="group collapsible {{ request()->routeIs('vocab-occurrence-*') ? 'open' : '' }}" data-key="occurrence">
+        <button class="group-header" type="button">
+          <span>OCCURRENCE</span>
+          <span class="chev" aria-hidden="true"></span>
+        </button>
+        <div class="group-items">
+          <a class="item {{ request()->routeIs('vocab-occurrence-organism-quantity-type.*') ? 'active' : '' }}" href="{{ route('vocab-occurrence-organism-quantity-type.index') }}">
+            @include('svg.check') <span>organismQuantityType</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-occurrence-sex.*') ? 'active' : '' }}" href="{{ route('vocab-occurrence-sex.index') }}">
+            @include('svg.check') <span>Sex</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-occurrence-life-stage.*') ? 'active' : '' }}" href="{{ route('vocab-occurrence-life-stage.index') }}">
+            @include('svg.check') <span>LifeStage</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-occurrence-reproductive-condition.*') ? 'active' : '' }}" href="{{ route('vocab-occurrence-reproductive-condition.index') }}">
+            @include('svg.check') <span>ReproductiveCondition</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-occurrence-establishment-means.*') ? 'active' : '' }}" href="{{ route('vocab-occurrence-establishment-means.index') }}">
+            @include('svg.check') <span>EstablishmentMeans</span>
+          </a>
+          <a class="item {{ request()->routeIs('vocab-occurrence-disposition.*') ? 'active' : '' }}" href="{{ route('vocab-occurrence-disposition.index') }}">
+            @include('svg.check') <span>Disposition</span>
+          </a>
+        </div>
+      </div>
 
-  <a class="item" href="#">
-    @include('svg.admins')
-    <span>Usuarios administradores</span>
-  </a>
-</nav>
+      {{-- ======================= LOCATION ====================== --}}
+      <div class="group collapsible {{ request()->routeIs('vocab-location-*') ? 'open' : '' }}" data-key="location">
+        <button class="group-header" type="button">
+          <span>LOCATION</span>
+          <span class="chev" aria-hidden="true"></span>
+        </button>
+        <div class="group-items">
+          @if (Route::has('vocab-location-continent.index'))
+          <a class="item {{ request()->routeIs('vocab-location-continent.*') ? 'active' : '' }}" href="{{ route('vocab-location-continent.index') }}">
+            @include('svg.check') <span>Continent</span>
+          </a>
+          @endif
 
+          @if (Route::has('vocab-location-verbatim-srs.index'))
+          <a class="item {{ request()->routeIs('vocab-location-verbatim-srs.*') ? 'active' : '' }}" href="{{ route('vocab-location-verbatim-srs.index') }}">
+            @include('svg.check') <span>Verbatim SRS</span>
+          </a>
+          @endif
+
+          @if (Route::has('vocab-location-georef-status.index'))
+          <a class="item {{ request()->routeIs('vocab-location-georef-status.*') ? 'active' : '' }}" href="{{ route('vocab-location-georef-status.index') }}">
+            @include('svg.check') <span>Georef status</span>
+          </a>
+          @endif
+        </div>
+      </div>
+
+      {{-- ======================== TAXON ======================== --}}
+      <div class="group collapsible {{ request()->routeIs('vocab-taxon-*') ? 'open' : '' }}" data-key="taxon">
+        <button class="group-header" type="button">
+          <span>TAXON</span>
+          <span class="chev" aria-hidden="true"></span>
+        </button>
+        <div class="group-items">
+          @if (Route::has('vocab-taxon-taxon-rank.index'))
+          <a class="item {{ request()->routeIs('vocab-taxon-taxon-rank.*') ? 'active' : '' }}" href="{{ route('vocab-taxon-taxon-rank.index') }}">
+            @include('svg.check') <span>Taxon rank</span>
+          </a>
+          @endif
+
+          @if (Route::has('vocab-taxon-taxonomic-status.index'))
+          <a class="item {{ request()->routeIs('vocab-taxon-taxonomic-status.*') ? 'active' : '' }}" href="{{ route('vocab-taxon-taxonomic-status.index') }}">
+            @include('svg.check') <span>Taxonomic status</span>
+          </a>
+          @endif
+        </div>
+      </div>
+
+      {{-- ==================== IDENTIFICATION =================== --}}
+      <div class="group collapsible {{ request()->routeIs('vocab-identification-*') ? 'open' : '' }}" data-key="identification">
+        <button class="group-header" type="button">
+          <span>IDENTIFICATION</span>
+          <span class="chev" aria-hidden="true"></span>
+        </button>
+        <div class="group-items">
+          @if (Route::has('vocab-identification-type-status.index'))
+          <a class="item {{ request()->routeIs('vocab-identification-type-status.*') ? 'active' : '' }}" href="{{ route('vocab-identification-type-status.index') }}">
+            @include('svg.check') <span>Type status</span>
+          </a>
+          @endif
+
+          @if (Route::has('vocab-identification-verification-status.index'))
+          <a class="item {{ request()->routeIs('vocab-identification-verification-status.*') ? 'active' : '' }}" href="{{ route('vocab-identification-verification-status.index') }}">
+            @include('svg.check') <span>Verification status</span>
+          </a>
+          @endif
+        </div>
+      </div>
+
+      {{-- ====================== TBLPRIMERS ===================== --}}
+      <div class="group collapsible {{ (request()->routeIs('vocab-tblprimers-*') || request()->routeIs('tblprimersf.*') || request()->routeIs('tblprimersr.*')) ? 'open' : '' }}" data-key="tblprimers">
+        <button class="group-header" type="button">
+          <span>TBLPRIMERS</span>
+          <span class="chev" aria-hidden="true"></span>
+        </button>
+        <div class="group-items">
+          @if (Route::has('vocab-tblprimers-primer-direction.index'))
+          <a class="item {{ request()->routeIs('vocab-tblprimers-primer-direction.*') ? 'active' : '' }}" href="{{ route('vocab-tblprimers-primer-direction.index') }}">
+            @include('svg.check') <span>Primer direction</span>
+          </a>
+          @endif
+
+          @if (Route::has('tblprimersf.index'))
+          <a class="item {{ request()->routeIs('tblprimersf.*') ? 'active' : '' }}" href="{{ route('tblprimersf.index') }}">
+            @include('svg.check') <span>Primers F</span>
+          </a>
+          @endif
+
+          @if (Route::has('tblprimersr.index'))
+          <a class="item {{ request()->routeIs('tblprimersr.*') ? 'active' : '' }}" href="{{ route('tblprimersr.index') }}">
+            @include('svg.check') <span>Primers R</span>
+          </a>
+          @endif
+        </div>
+      </div>
+
+      <a class="item" href="#">
+        @include('svg.admins')
+        <span>Usuarios administradores</span>
+      </a>
+    </nav>
   </aside>
 
   {{-- Contenido --}}
@@ -129,160 +207,3 @@
   </section>
 </body>
 </html>
-
-
-
-{{-- <!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>@yield('title','Inicio — IKIAM')</title>
-  @vite(['resources/css/custom.css','resources/js/app.js'])
-</head>
-<body class="app">
-  <aside class="sidebar">
-    <div class="brand">
-      <img src="{{ asset('favicon.ico') }}" alt="logo" class="brand-logo">
-      <div class="brand-title">UTPL - VIRTOPSIA</div>
-    </div>
-
-    <nav class="menu">
-      <a class="item" href="{{ route('ikiambio-users.index') }}">
-        @include('svg.users')
-        <span>Usuarios</span>
-      </a>
-
-      <a class="item" href="#">
-        @include('svg.cap')
-        <span>Titulaciones</span>
-      </a>
-
-      <a class="item" href="#">
-        @include('svg.list')
-        <span>Materias Usuarios</span>
-      </a>
-
-      <div class="group">REGISTROS:
-        
-        <div class="group collapsible {{ request()->is('record-level*') ? 'open' : '' }}" data-key="record-level">
-          <button class="group-header" type="button">
-            <span>RECORD LEVEL</span>
-            <span class="chev" aria-hidden="true"></span>
-          </button>
-
-          <div class="group-items">
-
-            <a class="item {{ request()->routeIs('record-level.types.*') ? 'active' : '' }}"
-              href="{{ route('record-level.types.index') }}">
-              @include('svg.check')
-              <span>Registrar tipos</span>
-            </a>
-            <a class="item {{ request()->routeIs('record-level.licenses.*') ? 'active' : '' }}"
-              href="{{ route('record-level.licenses.index') }}">
-              @include('svg.check')
-              <span>Registrar licenses</span>
-            </a>
-            <a class="item {{ request()->routeIs('record-level.rights-holder.*') ? 'active' : '' }}"
-              href="{{ route('record-level.rights-holder.index') }}">
-              @include('svg.check')
-              <span>Registrar rightsHolder</span>
-            </a>
-            <a class="item {{ request()->routeIs('record-level.access-rights.*') ? 'active' : '' }}"
-              href="{{ route('record-level.access-rights.index') }}">
-              @include('svg.check')
-              <span>Registrar accessRights</span>
-            </a>
-            <a class="item {{ request()->routeIs('record-level.institution-id.*') ? 'active' : '' }}"
-              href="{{ route('record-level.institution-id.index') }}">
-              @include('svg.check')
-              <span>Registrar institutionID</span>
-            </a>
-            <a class="item {{ request()->routeIs('record-level.collection-id.*') ? 'active' : '' }}"
-              href="{{ route('record-level.collection-id.index') }}">
-              @include('svg.check')
-              <span>Registrar collectionID</span>
-            </a>
-            <a class="item {{ request()->routeIs('record-level.institution-code.*') ? 'active' : '' }}"
-              href="{{ route('record-level.institution-code.index') }}">
-              @include('svg.check')
-              <span>Registrar institutionCode</span>
-            </a>
-            <a class="item {{ request()->routeIs('record-level.collection-code.*') ? 'active' : '' }}"
-              href="{{ route('record-level.collection-code.index') }}">
-              @include('svg.check')
-              <span>Registrar collectionCode</span>
-            </a>
-            <a class="item {{ request()->routeIs('record-level.owner-institution-code.*') ? 'active' : '' }}"
-              href="{{ route('record-level.owner-institution-code.index') }}">
-              @include('svg.check')
-              <span>Registrar ownerInstitutionCode</span>
-            </a>
-            <a class="item {{ request()->routeIs('record-level.basis-of-record.*') ? 'active' : '' }}"
-              href="{{ route('record-level.basis-of-record.index') }}">
-              @include('svg.check')
-              <span>Registrar basisOfRecord</span>
-            </a>
-          </div>
-        </div>
-
-        <div class="group collapsible {{ request()->routeIs('occurrence.*') ? 'open' : '' }}" data-key="occurrence">
-          <button class="group-header" type="button">
-            <span>OCCURRENCE</span>
-            <span class="chev" aria-hidden="true"></span>
-          </button>
-
-          <div class="group-items">
-            <a class="item {{ request()->routeIs('occurrence.organism-quantity-type.*') ? 'active' : '' }}"
-              href="{{ route('occurrence.organism-quantity-type.index') }}">
-              @include('svg.check')
-              <span>Registrar organismQuantityType</span>
-            </a>
-
-            <a class="item" href="#">
-              @include('svg.check')
-              <span>Sex</span>
-            </a>
-            <a class="item" href="#">
-              @include('svg.check')
-              <span>LifeStage</span>
-            </a>
-            <a class="item" href="#">
-              @include('svg.check')
-              <span>ReproductiveCondition</span>
-            </a>
-            <a class="item" href="#">
-              @include('svg.check')
-              <span>EstablishmentMeans</span>
-            </a>
-            <a class="item" href="#">
-              @include('svg.check')
-              <span>Disposition</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <a class="item" href="#">
-        @include('svg.admins')
-        <span>Usuarios administradores</span>
-      </a>
-    </nav>
-  </aside>
-
-  <section class="content">
-    <header class="topbar">
-      <div class="topbar-title">@yield('page_title','Inicio')</div>
-      <div class="topbar-user">
-        @include('svg.user')
-        <span>Admin MS2S</span>
-      </div>
-    </header>
-
-    <main class="content-body">
-      @yield('content')
-    </main>
-  </section>
-</body>
-</html>
- --}}

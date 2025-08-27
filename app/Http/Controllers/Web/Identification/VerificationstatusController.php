@@ -3,49 +3,67 @@
 namespace App\Http\Controllers\Web\Identification;
 
 use App\Http\Controllers\Controller;
-use App\Models\Vocab\Identification\Verificationstatus;
+use App\Http\Controllers\Concerns\WrapsTransactions;
+use App\Models\Vocab\Identification\VerificationStatus;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
-class VerificationstatusController extends Controller
+class VerificationStatusController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
-        $items = Verificationstatus::orderByDesc('vocab_identification_verificationStatus_id')->paginate(15);
-        return view('pages/vocab-identification-verificationStatus/index', compact('items'));
+        $items = VerificationStatus::orderByDesc('vocab_identification_verificationStatus_id')->paginate(15);
+        return view('pages.vocab-identification-verification-status.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/vocab-identification-verificationStatus/create');
+        return view('pages.vocab-identification-verification-status.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Verificationstatus::create($data);
-        return redirect()->route('vocab-identification-verificationStatus.index')->with('ok','Creado');
+
+        try {
+            $item = $this->tx(fn () => VerificationStatus::create($data));
+            return redirect()->route('vocab-identification-verification-status.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
-    public function show(Verificationstatus $verificationstatus)
+    public function show(VerificationStatus $verificationStatus)
     {
-        return view('pages/vocab-identification-verificationStatus/show', ['item' => $verificationstatus]);
+        return view('pages.vocab-identification-verification-status.show', ['item' => $verificationStatus]);
     }
 
-    public function edit(Verificationstatus $verificationstatus)
+    public function edit(VerificationStatus $verificationStatus)
     {
-        return view('pages/vocab-identification-verificationStatus/edit', ['item' => $verificationstatus]);
+        return view('pages.vocab-identification-verification-status.edit', ['item' => $verificationStatus]);
     }
 
-    public function update(Request $request, Verificationstatus $verificationstatus)
+    public function update(Request $request, VerificationStatus $verificationStatus)
     {
         $data = $request->all();
-        $verificationstatus->update($data);
-        return redirect()->route('vocab-identification-verificationStatus.index')->with('ok','Actualizado');
+
+        try {
+            $this->tx(fn () => $verificationStatus->update($data));
+            return redirect()->route('vocab-identification-verification-status.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
-    public function destroy(Verificationstatus $verificationstatus)
+    public function destroy(VerificationStatus $verificationStatus)
     {
-        $verificationstatus->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $verificationStatus->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

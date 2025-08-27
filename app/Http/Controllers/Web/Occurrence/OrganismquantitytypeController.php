@@ -3,49 +3,67 @@
 namespace App\Http\Controllers\Web\Occurrence;
 
 use App\Http\Controllers\Controller;
-use App\Models\Vocab\Occurrence\Organismquantitytype;
+use App\Http\Controllers\Concerns\WrapsTransactions;
+use App\Models\Vocab\Occurrence\OrganismQuantityType;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
-class OrganismquantitytypeController extends Controller
+class OrganismQuantityTypeController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
-        $items = Organismquantitytype::orderByDesc('oqtype_id')->paginate(15);
-        return view('pages/vocab-occurrence-organismQuantityType/index', compact('items'));
+        $items = OrganismQuantityType::orderByDesc('organismQuantityType_id')->paginate(15);
+        return view('pages.vocab-occurrence-organism-quantity-type.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/vocab-occurrence-organismQuantityType/create');
+        return view('pages.vocab-occurrence-organism-quantity-type.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Organismquantitytype::create($data);
-        return redirect()->route('vocab-occurrence-organismQuantityType.index')->with('ok','Creado');
+
+        try {
+            $item = $this->tx(fn () => OrganismQuantityType::create($data));
+            return redirect()->route('vocab-occurrence-organism-quantity-type.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
-    public function show(Organismquantitytype $organismquantitytype)
+    public function show(OrganismQuantityType $organismQuantityType)
     {
-        return view('pages/vocab-occurrence-organismQuantityType/show', ['item' => $organismquantitytype]);
+        return view('pages.vocab-occurrence-organism-quantity-type.show', ['item' => $organismQuantityType]);
     }
 
-    public function edit(Organismquantitytype $organismquantitytype)
+    public function edit(OrganismQuantityType $organismQuantityType)
     {
-        return view('pages/vocab-occurrence-organismQuantityType/edit', ['item' => $organismquantitytype]);
+        return view('pages.vocab-occurrence-organism-quantity-type.edit', ['item' => $organismQuantityType]);
     }
 
-    public function update(Request $request, Organismquantitytype $organismquantitytype)
+    public function update(Request $request, OrganismQuantityType $organismQuantityType)
     {
         $data = $request->all();
-        $organismquantitytype->update($data);
-        return redirect()->route('vocab-occurrence-organismQuantityType.index')->with('ok','Actualizado');
+
+        try {
+            $this->tx(fn () => $organismQuantityType->update($data));
+            return redirect()->route('vocab-occurrence-organism-quantity-type.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
-    public function destroy(Organismquantitytype $organismquantitytype)
+    public function destroy(OrganismQuantityType $organismQuantityType)
     {
-        $organismquantitytype->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $organismQuantityType->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

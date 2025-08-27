@@ -3,14 +3,18 @@
 namespace App\Http\Controllers\Web\RecordLevel;
 
 use App\Http\Controllers\Controller;
-use App\Models\Vocab\RecordLevel\RightsHolder;
+use App\Http\Controllers\Concerns\WrapsTransactions;
+use App\Models\Vocab\RecordLevel\Rightsholder;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class RightsHolderController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
-        $items = RightsHolder::orderByDesc('rightsHolder_id')->paginate(15);
+        $items = Rightsholder::orderByDesc('rightsHolder_id')->paginate(15);
         return view('pages.vocab-record-level-rights-holder.index', compact('items'));
     }
 
@@ -21,50 +25,45 @@ class RightsHolderController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'rightsHolder_value' => ['required', 'string', 'max:150'],
-            'description'        => ['nullable', 'string'],
-        ]);
+        $data = $request->all();
 
-        $item = RightsHolder::create($data);
-
-        return redirect()
-            ->route('vocab-record-level-rights-holder.index')
-            ->with('ok', 'Creado correctamente');
+        try {
+            $item = $this->tx(fn () => Rightsholder::create($data));
+            return redirect()->route('vocab-record-level-rights-holder.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
-    public function show(RightsHolder $rightsHolder)
+    public function show(Rightsholder $rightsHolder)
     {
-        return view('pages.vocab-record-level-rights-holder.show', [
-            'item' => $rightsHolder,
-        ]);
+        return view('pages.vocab-record-level-rights-holder.show', ['item' => $rightsHolder]);
     }
 
-    public function edit(RightsHolder $rightsHolder)
+    public function edit(Rightsholder $rightsHolder)
     {
-        return view('pages.vocab-record-level-rights-holder.edit', [
-            'item' => $rightsHolder,
-        ]);
+        return view('pages.vocab-record-level-rights-holder.edit', ['item' => $rightsHolder]);
     }
 
-    public function update(Request $request, RightsHolder $rightsHolder)
+    public function update(Request $request, Rightsholder $rightsHolder)
     {
-        $data = $request->validate([
-            'rightsHolder_value' => ['required', 'string', 'max:150'],
-            'description'        => ['nullable', 'string'],
-        ]);
+        $data = $request->all();
 
-        $rightsHolder->update($data);
-
-        return redirect()
-            ->route('vocab-record-level-rights-holder.index')
-            ->with('ok', 'Actualizado correctamente');
+        try {
+            $this->tx(fn () => $rightsHolder->update($data));
+            return redirect()->route('vocab-record-level-rights-holder.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
-    public function destroy(RightsHolder $rightsHolder)
+    public function destroy(Rightsholder $rightsHolder)
     {
-        $rightsHolder->delete();
-
-        return back()->with('ok', 'Eliminado');
+        try {
+            $this->tx(fn () => $rightsHolder->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

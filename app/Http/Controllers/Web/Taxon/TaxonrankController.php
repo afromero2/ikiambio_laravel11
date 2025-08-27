@@ -3,49 +3,67 @@
 namespace App\Http\Controllers\Web\Taxon;
 
 use App\Http\Controllers\Controller;
-use App\Models\Vocab\Taxon\Taxonrank;
+use App\Http\Controllers\Concerns\WrapsTransactions;
+use App\Models\Vocab\Taxon\TaxonRank;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
-class TaxonrankController extends Controller
+class TaxonRankController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
-        $items = Taxonrank::orderByDesc('taxonRank_id')->paginate(15);
-        return view('pages/vocab-taxon-taxonRank/index', compact('items'));
+        $items = TaxonRank::orderByDesc('taxonRank_id')->paginate(15);
+        return view('pages.vocab-taxon-taxon-rank.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/vocab-taxon-taxonRank/create');
+        return view('pages.vocab-taxon-taxon-rank.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Taxonrank::create($data);
-        return redirect()->route('vocab-taxon-taxonRank.index')->with('ok','Creado');
+
+        try {
+            $item = $this->tx(fn () => TaxonRank::create($data));
+            return redirect()->route('vocab-taxon-taxon-rank.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
-    public function show(Taxonrank $taxonrank)
+    public function show(TaxonRank $taxonRank)
     {
-        return view('pages/vocab-taxon-taxonRank/show', ['item' => $taxonrank]);
+        return view('pages.vocab-taxon-taxon-rank.show', ['item' => $taxonRank]);
     }
 
-    public function edit(Taxonrank $taxonrank)
+    public function edit(TaxonRank $taxonRank)
     {
-        return view('pages/vocab-taxon-taxonRank/edit', ['item' => $taxonrank]);
+        return view('pages.vocab-taxon-taxon-rank.edit', ['item' => $taxonRank]);
     }
 
-    public function update(Request $request, Taxonrank $taxonrank)
+    public function update(Request $request, TaxonRank $taxonRank)
     {
         $data = $request->all();
-        $taxonrank->update($data);
-        return redirect()->route('vocab-taxon-taxonRank.index')->with('ok','Actualizado');
+
+        try {
+            $this->tx(fn () => $taxonRank->update($data));
+            return redirect()->route('vocab-taxon-taxon-rank.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
-    public function destroy(Taxonrank $taxonrank)
+    public function destroy(TaxonRank $taxonRank)
     {
-        $taxonrank->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $taxonRank->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Web\RecordLevel;
 
 use App\Http\Controllers\Controller;
-use App\Models\Vocab\RecordLevel\Institutionid; // si tu modelo se llama así (sin mayúscula en Id)
+use App\Http\Controllers\Concerns\WrapsTransactions;
+use App\Models\Vocab\RecordLevel\Institutionid;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class InstitutionIdController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
         $items = Institutionid::orderByDesc('institution_id')->paginate(15);
@@ -21,13 +25,14 @@ class InstitutionIdController extends Controller
 
     public function store(Request $request)
     {
-        // Ajusta reglas según tu esquema real
         $data = $request->all();
-        Institutionid::create($data);
 
-        return redirect()
-            ->route('vocab-record-level-institution-id.index')
-            ->with('ok', 'Creado');
+        try {
+            $item = $this->tx(fn () => Institutionid::create($data));
+            return redirect()->route('vocab-record-level-institution-id.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
     public function show(Institutionid $institutionId)
@@ -43,16 +48,22 @@ class InstitutionIdController extends Controller
     public function update(Request $request, Institutionid $institutionId)
     {
         $data = $request->all();
-        $institutionId->update($data);
 
-        return redirect()
-            ->route('vocab-record-level-institution-id.index')
-            ->with('ok', 'Actualizado');
+        try {
+            $this->tx(fn () => $institutionId->update($data));
+            return redirect()->route('vocab-record-level-institution-id.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
     public function destroy(Institutionid $institutionId)
     {
-        $institutionId->delete();
-        return back()->with('ok', 'Eliminado');
+        try {
+            $this->tx(fn () => $institutionId->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

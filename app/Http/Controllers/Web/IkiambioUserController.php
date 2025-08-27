@@ -3,70 +3,67 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
+use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\IkiambioUser;
-use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class IkiambioUserController extends Controller
 {
-    // GET
+    use WrapsTransactions;
+
     public function index()
     {
-        $users = IkiambioUser::orderByDesc('createdDate')->paginate(15);
-        return view('ikiambio_users.index', compact('users'));
+        $items = IkiambioUser::orderByDesc('id')->paginate(15);
+        return view('pages.ikiambio-users.index', compact('items'));
     }
 
     public function create()
     {
-        return view('ikiambio_users.create');
+        return view('pages.ikiambio-users.create');
     }
 
-    // POST
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'utplId'        => ['nullable','string','max:255','unique:ikiambio_users,utplId'],
-            'firstName'     => ['required','string','max:255'],
-            'lastName'      => ['required','string','max:255'],
-            'identification'=> ['nullable','string','max:255','unique:ikiambio_users,identification'],
-            'username'      => ['required','string','max:255','unique:ikiambio_users,username'],
-        ]);
+        $data = $request->all();
 
-        $user = IkiambioUser::create($data);
-        return redirect()->route('ikiambio-users.show',$user)->with('ok','Creado');
+        try {
+            $item = $this->tx(fn () => IkiambioUser::create($data));
+            return redirect()->route('ikiambio-users.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
-    // GET
     public function show(IkiambioUser $ikiambioUser)
     {
-        return view('ikiambio_users.show', compact('ikiambioUser'));
+        return view('pages.ikiambio-users.show', ['item' => $ikiambioUser]);
     }
 
     public function edit(IkiambioUser $ikiambioUser)
     {
-        return view('ikiambio_users.edit', compact('ikiambioUser'));
+        return view('pages.ikiambio-users.edit', ['item' => $ikiambioUser]);
     }
 
-    // PUT/PATCH
     public function update(Request $request, IkiambioUser $ikiambioUser)
     {
-        $data = $request->validate([
-            'utplId'        => ['nullable','string','max:255', Rule::unique('ikiambio_users','utplId')->ignore($ikiambioUser->id)],
-            'firstName'     => ['required','string','max:255'],
-            'lastName'      => ['required','string','max:255'],
-            'identification'=> ['nullable','string','max:255', Rule::unique('ikiambio_users','identification')->ignore($ikiambioUser->id)],
-            'username'      => ['required','string','max:255', Rule::unique('ikiambio_users','username')->ignore($ikiambioUser->id)],
-        ]);
+        $data = $request->all();
 
-        $ikiambioUser->update($data);
-        return redirect()->route('ikiambio-users.show',$ikiambioUser)->with('ok','Actualizado');
+        try {
+            $this->tx(fn () => $ikiambioUser->update($data));
+            return redirect()->route('ikiambio-users.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
-    // DELETE
     public function destroy(IkiambioUser $ikiambioUser)
     {
-        $ikiambioUser->delete();
-        return redirect()->route('ikiambio-users.index')->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $ikiambioUser->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

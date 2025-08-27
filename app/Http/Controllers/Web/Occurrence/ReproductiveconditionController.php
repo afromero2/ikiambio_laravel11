@@ -3,49 +3,67 @@
 namespace App\Http\Controllers\Web\Occurrence;
 
 use App\Http\Controllers\Controller;
-use App\Models\Vocab\Occurrence\Reproductivecondition;
+use App\Http\Controllers\Concerns\WrapsTransactions;
+use App\Models\Vocab\Occurrence\ReproductiveCondition;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
-class ReproductiveconditionController extends Controller
+class ReproductiveConditionController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
-        $items = Reproductivecondition::orderByDesc('reprocond_id')->paginate(15);
-        return view('pages/vocab-occurrence-reproductiveCondition/index', compact('items'));
+        $items = ReproductiveCondition::orderByDesc('reproductiveCondition_id')->paginate(15);
+        return view('pages.vocab-occurrence-reproductive-condition.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/vocab-occurrence-reproductiveCondition/create');
+        return view('pages.vocab-occurrence-reproductive-condition.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Reproductivecondition::create($data);
-        return redirect()->route('vocab-occurrence-reproductiveCondition.index')->with('ok','Creado');
+
+        try {
+            $item = $this->tx(fn () => ReproductiveCondition::create($data));
+            return redirect()->route('vocab-occurrence-reproductive-condition.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
-    public function show(Reproductivecondition $reproductivecondition)
+    public function show(ReproductiveCondition $reproductiveCondition)
     {
-        return view('pages/vocab-occurrence-reproductiveCondition/show', ['item' => $reproductivecondition]);
+        return view('pages.vocab-occurrence-reproductive-condition.show', ['item' => $reproductiveCondition]);
     }
 
-    public function edit(Reproductivecondition $reproductivecondition)
+    public function edit(ReproductiveCondition $reproductiveCondition)
     {
-        return view('pages/vocab-occurrence-reproductiveCondition/edit', ['item' => $reproductivecondition]);
+        return view('pages.vocab-occurrence-reproductive-condition.edit', ['item' => $reproductiveCondition]);
     }
 
-    public function update(Request $request, Reproductivecondition $reproductivecondition)
+    public function update(Request $request, ReproductiveCondition $reproductiveCondition)
     {
         $data = $request->all();
-        $reproductivecondition->update($data);
-        return redirect()->route('vocab-occurrence-reproductiveCondition.index')->with('ok','Actualizado');
+
+        try {
+            $this->tx(fn () => $reproductiveCondition->update($data));
+            return redirect()->route('vocab-occurrence-reproductive-condition.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
-    public function destroy(Reproductivecondition $reproductivecondition)
+    public function destroy(ReproductiveCondition $reproductiveCondition)
     {
-        $reproductivecondition->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $reproductiveCondition->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

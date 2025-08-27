@@ -1,51 +1,66 @@
 <?php
 
-namespace App\Http\Controllers\Web;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Tblextracciones;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class TblextraccionesController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
-        $items = Tblextracciones::orderByDesc('idExtracciones')->paginate(15);
-        return view('pages/TblExtracciones/index', compact('items'));
+        $items = Tblextracciones::orderByDesc('id')->paginate(15);
+        return view('pages.tblextracciones.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/TblExtracciones/create');
+        return view('pages.tblextracciones.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Tblextracciones::create($data);
-        return redirect()->route('TblExtracciones.index')->with('ok','Creado');
+        try {
+            $item = $this->tx(fn () => Tblextracciones::create($data));
+            return redirect()->route('tblextracciones.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
     public function show(Tblextracciones $tblextracciones)
     {
-        return view('pages/TblExtracciones/show', ['item' => $tblextracciones]);
+        return view('pages.tblextracciones.show', ['item' => $tblextracciones]);
     }
 
     public function edit(Tblextracciones $tblextracciones)
     {
-        return view('pages/TblExtracciones/edit', ['item' => $tblextracciones]);
+        return view('pages.tblextracciones.edit', ['item' => $tblextracciones]);
     }
 
     public function update(Request $request, Tblextracciones $tblextracciones)
     {
         $data = $request->all();
-        $tblextracciones->update($data);
-        return redirect()->route('TblExtracciones.index')->with('ok','Actualizado');
+        try {
+            $this->tx(fn () => $tblextracciones->update($data));
+            return redirect()->route('tblextracciones.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
     public function destroy(Tblextracciones $tblextracciones)
     {
-        $tblextracciones->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $tblextracciones->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

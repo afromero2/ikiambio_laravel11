@@ -3,49 +3,67 @@
 namespace App\Http\Controllers\Web\RecordLevel;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\RecordLevel\Institutioncode;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
-class InstitutioncodeController extends Controller
+class InstitutionCodeController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
         $items = Institutioncode::orderByDesc('institutionCode_id')->paginate(15);
-        return view('pages/vocab-record-level-institutionCode/index', compact('items'));
+        return view('pages.vocab-record-level-institution-code.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/vocab-record-level-institutionCode/create');
+        return view('pages.vocab-record-level-institution-code.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Institutioncode::create($data);
-        return redirect()->route('vocab-record-level-institutionCode.index')->with('ok','Creado');
+
+        try {
+            $item = $this->tx(fn () => Institutioncode::create($data));
+            return redirect()->route('vocab-record-level-institution-code.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
-    public function show(Institutioncode $institutioncode)
+    public function show(Institutioncode $institutionCode)
     {
-        return view('pages/vocab-record-level-institutionCode/show', ['item' => $institutioncode]);
+        return view('pages.vocab-record-level-institution-code.show', ['item' => $institutionCode]);
     }
 
-    public function edit(Institutioncode $institutioncode)
+    public function edit(Institutioncode $institutionCode)
     {
-        return view('pages/vocab-record-level-institutionCode/edit', ['item' => $institutioncode]);
+        return view('pages.vocab-record-level-institution-code.edit', ['item' => $institutionCode]);
     }
 
-    public function update(Request $request, Institutioncode $institutioncode)
+    public function update(Request $request, Institutioncode $institutionCode)
     {
         $data = $request->all();
-        $institutioncode->update($data);
-        return redirect()->route('vocab-record-level-institutionCode.index')->with('ok','Actualizado');
+
+        try {
+            $this->tx(fn () => $institutionCode->update($data));
+            return redirect()->route('vocab-record-level-institution-code.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
-    public function destroy(Institutioncode $institutioncode)
+    public function destroy(Institutioncode $institutionCode)
     {
-        $institutioncode->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $institutionCode->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

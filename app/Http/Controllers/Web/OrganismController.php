@@ -1,51 +1,66 @@
 <?php
 
-namespace App\Http\Controllers\Web;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Organism;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class OrganismController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
-        $items = Organism::orderByDesc('organismID')->paginate(15);
-        return view('pages/organism/index', compact('items'));
+        $items = Organism::orderByDesc('id')->paginate(15);
+        return view('pages.organism.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/organism/create');
+        return view('pages.organism.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Organism::create($data);
-        return redirect()->route('organism.index')->with('ok','Creado');
+        try {
+            $item = $this->tx(fn () => Organism::create($data));
+            return redirect()->route('organism.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
     public function show(Organism $organism)
     {
-        return view('pages/organism/show', ['item' => $organism]);
+        return view('pages.organism.show', ['item' => $organism]);
     }
 
     public function edit(Organism $organism)
     {
-        return view('pages/organism/edit', ['item' => $organism]);
+        return view('pages.organism.edit', ['item' => $organism]);
     }
 
     public function update(Request $request, Organism $organism)
     {
         $data = $request->all();
-        $organism->update($data);
-        return redirect()->route('organism.index')->with('ok','Actualizado');
+        try {
+            $this->tx(fn () => $organism->update($data));
+            return redirect()->route('organism.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
     public function destroy(Organism $organism)
     {
-        $organism->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $organism->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

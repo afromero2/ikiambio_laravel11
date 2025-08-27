@@ -1,51 +1,66 @@
 <?php
 
-namespace App\Http\Controllers\Web;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class LocationController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
-        $items = Location::orderByDesc('locationID')->paginate(15);
-        return view('pages/location/index', compact('items'));
+        $items = Location::orderByDesc('id')->paginate(15);
+        return view('pages.location.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/location/create');
+        return view('pages.location.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Location::create($data);
-        return redirect()->route('location.index')->with('ok','Creado');
+        try {
+            $item = $this->tx(fn () => Location::create($data));
+            return redirect()->route('location.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
     public function show(Location $location)
     {
-        return view('pages/location/show', ['item' => $location]);
+        return view('pages.location.show', ['item' => $location]);
     }
 
     public function edit(Location $location)
     {
-        return view('pages/location/edit', ['item' => $location]);
+        return view('pages.location.edit', ['item' => $location]);
     }
 
     public function update(Request $request, Location $location)
     {
         $data = $request->all();
-        $location->update($data);
-        return redirect()->route('location.index')->with('ok','Actualizado');
+        try {
+            $this->tx(fn () => $location->update($data));
+            return redirect()->route('location.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
     public function destroy(Location $location)
     {
-        $location->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $location->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

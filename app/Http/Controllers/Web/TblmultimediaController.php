@@ -1,51 +1,66 @@
 <?php
 
-namespace App\Http\Controllers\Web;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Tblmultimedia;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class TblmultimediaController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
-        $items = Tblmultimedia::orderByDesc('idMultimedia')->paginate(15);
-        return view('pages/TblMultimedia/index', compact('items'));
+        $items = Tblmultimedia::orderByDesc('id')->paginate(15);
+        return view('pages.tblmultimedia.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/TblMultimedia/create');
+        return view('pages.tblmultimedia.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Tblmultimedia::create($data);
-        return redirect()->route('TblMultimedia.index')->with('ok','Creado');
+        try {
+            $item = $this->tx(fn () => Tblmultimedia::create($data));
+            return redirect()->route('tblmultimedia.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
     public function show(Tblmultimedia $tblmultimedia)
     {
-        return view('pages/TblMultimedia/show', ['item' => $tblmultimedia]);
+        return view('pages.tblmultimedia.show', ['item' => $tblmultimedia]);
     }
 
     public function edit(Tblmultimedia $tblmultimedia)
     {
-        return view('pages/TblMultimedia/edit', ['item' => $tblmultimedia]);
+        return view('pages.tblmultimedia.edit', ['item' => $tblmultimedia]);
     }
 
     public function update(Request $request, Tblmultimedia $tblmultimedia)
     {
         $data = $request->all();
-        $tblmultimedia->update($data);
-        return redirect()->route('TblMultimedia.index')->with('ok','Actualizado');
+        try {
+            $this->tx(fn () => $tblmultimedia->update($data));
+            return redirect()->route('tblmultimedia.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
     public function destroy(Tblmultimedia $tblmultimedia)
     {
-        $tblmultimedia->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $tblmultimedia->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

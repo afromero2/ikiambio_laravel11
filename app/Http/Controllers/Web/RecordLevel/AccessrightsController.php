@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Web\RecordLevel;
 
 use App\Http\Controllers\Controller;
-use App\Models\Vocab\RecordLevel\Accessrights; // si tu modelo se llama así
+use App\Http\Controllers\Concerns\WrapsTransactions;
+use App\Models\Vocab\RecordLevel\Accessrights;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class AccessRightsController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
         $items = Accessrights::orderByDesc('accessrights_id')->paginate(15);
@@ -21,20 +25,17 @@ class AccessRightsController extends Controller
 
     public function store(Request $request)
     {
-        // ajusta reglas a tu esquema real
-        $data = $request->validate([
-            'accessrights_value' => ['required', 'string', 'max:150'],
-            'description'        => ['nullable', 'string'],
-        ]);
+        $data = $request->all();
 
-        $item = Accessrights::create($data);
-
-        return redirect()
-            ->route('vocab-record-level-access-rights.index')
-            ->with('ok','Creado');
+        try {
+            $item = $this->tx(fn () => Accessrights::create($data));
+            return redirect()->route('vocab-record-level-access-rights.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
-    public function show(Accessrights $accessRights) // <-- nombre de variable = nombre del parámetro de ruta
+    public function show(Accessrights $accessRights)
     {
         return view('pages.vocab-record-level-access-rights.show', ['item' => $accessRights]);
     }
@@ -46,21 +47,23 @@ class AccessRightsController extends Controller
 
     public function update(Request $request, Accessrights $accessRights)
     {
-        $data = $request->validate([
-            'accessrights_value' => ['required', 'string', 'max:150'],
-            'description'        => ['nullable', 'string'],
-        ]);
+        $data = $request->all();
 
-        $accessRights->update($data);
-
-        return redirect()
-            ->route('vocab-record-level-access-rights.index')
-            ->with('ok','Actualizado');
+        try {
+            $this->tx(fn () => $accessRights->update($data));
+            return redirect()->route('vocab-record-level-access-rights.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
     public function destroy(Accessrights $accessRights)
     {
-        $accessRights->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $accessRights->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

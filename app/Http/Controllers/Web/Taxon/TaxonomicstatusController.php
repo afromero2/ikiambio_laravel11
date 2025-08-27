@@ -3,49 +3,67 @@
 namespace App\Http\Controllers\Web\Taxon;
 
 use App\Http\Controllers\Controller;
-use App\Models\Vocab\Taxon\Taxonomicstatus;
+use App\Http\Controllers\Concerns\WrapsTransactions;
+use App\Models\Vocab\Taxon\TaxonomicStatus;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
-class TaxonomicstatusController extends Controller
+class TaxonomicStatusController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
-        $items = Taxonomicstatus::orderByDesc('taxonomicStatus_id')->paginate(15);
-        return view('pages/vocab-taxon-taxonomicStatus/index', compact('items'));
+        $items = TaxonomicStatus::orderByDesc('taxonomicStatus_id')->paginate(15);
+        return view('pages.vocab-taxon-taxonomic-status.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/vocab-taxon-taxonomicStatus/create');
+        return view('pages.vocab-taxon-taxonomic-status.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Taxonomicstatus::create($data);
-        return redirect()->route('vocab-taxon-taxonomicStatus.index')->with('ok','Creado');
+
+        try {
+            $item = $this->tx(fn () => TaxonomicStatus::create($data));
+            return redirect()->route('vocab-taxon-taxonomic-status.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
-    public function show(Taxonomicstatus $taxonomicstatus)
+    public function show(TaxonomicStatus $taxonomicStatus)
     {
-        return view('pages/vocab-taxon-taxonomicStatus/show', ['item' => $taxonomicstatus]);
+        return view('pages.vocab-taxon-taxonomic-status.show', ['item' => $taxonomicStatus]);
     }
 
-    public function edit(Taxonomicstatus $taxonomicstatus)
+    public function edit(TaxonomicStatus $taxonomicStatus)
     {
-        return view('pages/vocab-taxon-taxonomicStatus/edit', ['item' => $taxonomicstatus]);
+        return view('pages.vocab-taxon-taxonomic-status.edit', ['item' => $taxonomicStatus]);
     }
 
-    public function update(Request $request, Taxonomicstatus $taxonomicstatus)
+    public function update(Request $request, TaxonomicStatus $taxonomicStatus)
     {
         $data = $request->all();
-        $taxonomicstatus->update($data);
-        return redirect()->route('vocab-taxon-taxonomicStatus.index')->with('ok','Actualizado');
+
+        try {
+            $this->tx(fn () => $taxonomicStatus->update($data));
+            return redirect()->route('vocab-taxon-taxonomic-status.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
-    public function destroy(Taxonomicstatus $taxonomicstatus)
+    public function destroy(TaxonomicStatus $taxonomicStatus)
     {
-        $taxonomicstatus->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $taxonomicStatus->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

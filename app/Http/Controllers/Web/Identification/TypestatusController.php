@@ -3,49 +3,67 @@
 namespace App\Http\Controllers\Web\Identification;
 
 use App\Http\Controllers\Controller;
-use App\Models\Vocab\Identification\Typestatus;
+use App\Http\Controllers\Concerns\WrapsTransactions;
+use App\Models\Vocab\Identification\TypeStatus;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
-class TypestatusController extends Controller
+class TypeStatusController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
-        $items = Typestatus::orderByDesc('vocab_identification_typeStatus_id')->paginate(15);
-        return view('pages/vocab-identification-typeStatus/index', compact('items'));
+        $items = TypeStatus::orderByDesc('vocab_identification_typeStatus_id')->paginate(15);
+        return view('pages.vocab-identification-type-status.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/vocab-identification-typeStatus/create');
+        return view('pages.vocab-identification-type-status.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Typestatus::create($data);
-        return redirect()->route('vocab-identification-typeStatus.index')->with('ok','Creado');
+
+        try {
+            $item = $this->tx(fn () => TypeStatus::create($data));
+            return redirect()->route('vocab-identification-type-status.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
-    public function show(Typestatus $typestatus)
+    public function show(TypeStatus $typeStatus)
     {
-        return view('pages/vocab-identification-typeStatus/show', ['item' => $typestatus]);
+        return view('pages.vocab-identification-type-status.show', ['item' => $typeStatus]);
     }
 
-    public function edit(Typestatus $typestatus)
+    public function edit(TypeStatus $typeStatus)
     {
-        return view('pages/vocab-identification-typeStatus/edit', ['item' => $typestatus]);
+        return view('pages.vocab-identification-type-status.edit', ['item' => $typeStatus]);
     }
 
-    public function update(Request $request, Typestatus $typestatus)
+    public function update(Request $request, TypeStatus $typeStatus)
     {
         $data = $request->all();
-        $typestatus->update($data);
-        return redirect()->route('vocab-identification-typeStatus.index')->with('ok','Actualizado');
+
+        try {
+            $this->tx(fn () => $typeStatus->update($data));
+            return redirect()->route('vocab-identification-type-status.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
-    public function destroy(Typestatus $typestatus)
+    public function destroy(TypeStatus $typeStatus)
     {
-        $typestatus->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $typeStatus->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

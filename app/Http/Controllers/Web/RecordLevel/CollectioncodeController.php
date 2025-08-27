@@ -3,49 +3,67 @@
 namespace App\Http\Controllers\Web\RecordLevel;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\RecordLevel\Collectioncode;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
-class CollectioncodeController extends Controller
+class CollectionCodeController extends Controller
 {
+    use WrapsTransactions;
+
     public function index()
     {
         $items = Collectioncode::orderByDesc('collectionCode_id')->paginate(15);
-        return view('pages/vocab-record-level-collectionCode/index', compact('items'));
+        return view('pages.vocab-record-level-collection-code.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages/vocab-record-level-collectionCode/create');
+        return view('pages.vocab-record-level-collection-code.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $item = Collectioncode::create($data);
-        return redirect()->route('vocab-record-level-collectionCode.index')->with('ok','Creado');
+
+        try {
+            $item = $this->tx(fn () => Collectioncode::create($data));
+            return redirect()->route('vocab-record-level-collection-code.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
-    public function show(Collectioncode $collectioncode)
+    public function show(Collectioncode $collectionCode)
     {
-        return view('pages/vocab-record-level-collectionCode/show', ['item' => $collectioncode]);
+        return view('pages.vocab-record-level-collection-code.show', ['item' => $collectionCode]);
     }
 
-    public function edit(Collectioncode $collectioncode)
+    public function edit(Collectioncode $collectionCode)
     {
-        return view('pages/vocab-record-level-collectionCode/edit', ['item' => $collectioncode]);
+        return view('pages.vocab-record-level-collection-code.edit', ['item' => $collectionCode]);
     }
 
-    public function update(Request $request, Collectioncode $collectioncode)
+    public function update(Request $request, Collectioncode $collectionCode)
     {
         $data = $request->all();
-        $collectioncode->update($data);
-        return redirect()->route('vocab-record-level-collectionCode.index')->with('ok','Actualizado');
+
+        try {
+            $this->tx(fn () => $collectionCode->update($data));
+            return redirect()->route('vocab-record-level-collection-code.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
-    public function destroy(Collectioncode $collectioncode)
+    public function destroy(Collectioncode $collectionCode)
     {
-        $collectioncode->delete();
-        return back()->with('ok','Eliminado');
+        try {
+            $this->tx(fn () => $collectionCode->delete());
+            return back()->with('ok','Eliminado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+        }
     }
 }

@@ -29,7 +29,7 @@ class IkiambioUserController extends Controller
 
         try {
             $item = $this->tx(fn () => IkiambioUser::create($data));
-            return redirect()->route('pages.ikiambio-users.index')->with('ok','Creado');
+            return redirect()->route('ikiambio-users.index')->with('ok','Creado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo crear.')->withInput();
         }
@@ -37,12 +37,12 @@ class IkiambioUserController extends Controller
 
     public function show(IkiambioUser $ikiambioUser)
     {
-        return view('pages.ikiambio-users.show', ['item' => $ikiambioUser]);
+        return view('pages.ikiambio-users.show', ['user' => $ikiambioUser]);
     }
 
     public function edit(IkiambioUser $ikiambioUser)
     {
-        return view('pages.ikiambio-users.edit', ['item' => $ikiambioUser]);
+        return view('pages.ikiambio-users.edit', ['user' => $ikiambioUser]);
     }
 
     public function update(Request $request, IkiambioUser $ikiambioUser)
@@ -51,7 +51,7 @@ class IkiambioUserController extends Controller
 
         try {
             $this->tx(fn () => $ikiambioUser->update($data));
-            return redirect()->route('pages.ikiambio-users.index')->with('ok','Actualizado');
+            return redirect()->route('ikiambio-users.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
         }

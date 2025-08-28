@@ -1,55 +1,74 @@
 @extends('layouts.sidebar')
-@section('page_title','Record level')
+
+@section('title','Record Level — Listado')
+@section('page_title','Record Level')
 
 @section('content')
-<div class="d-flex" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-  <h1 style="margin:0;font-size:1.25rem;">Record level</h1>
-  <a href="{{ route('record-level.create') }}" class="btn primary">Nuevo</a>
-</div>
-
 <div class="card">
-  <div class="card-body" style="padding:0;">
-    <div style="overflow:auto;">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Record level id</th>
-            <th>Type</th>
-            <th>Modified</th>
-            <th>Language</th>
-            <th>License</th>
-            <th>Rightsholder</th>
-            <th style="text-align:right;">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-        @forelse($items as $item)
-          <tr>
-            <td>{{ $item->record_level_id }}</td>
-            <td>{{ $item->type }}</td>
-            <td>{{ $item->modified }}</td>
-            <td>{{ $item->language }}</td>
-            <td>{{ $item->license }}</td>
-            <td>{{ $item->rightsHolder }}</td>
-            <td style="text-align:right;">
-              <a class="btn ghost" href="{{ route('record-level.show', $item) }}">Ver</a>
-              <a class="btn ghost warn" href="{{ route('record-level.edit', $item) }}">Editar</a>
-              <form style="display:inline" method="POST" action="{{ route('record-level.destroy', $item) }}" onsubmit="return confirm('¿Eliminar?')">
-                @csrf @method('DELETE')
-                <button class="btn ghost danger" type="submit">Eliminar</button>
-              </form>
-            </td>
-          </tr>
-        @empty
-          <tr><td colspan="7" style="text-align:center;color:#6b7280;padding:20px;">Sin registros</td></tr>
-        @endforelse
-        </tbody>
-      </table>
-    </div>
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h6 class="m-0">Listado</h6>
+    <a href="{{ route('record-level.create') }}" class="btn btn-primary btn-sm">Nuevo</a>
   </div>
-</div>
 
-<div style="margin-top:12px;">
-  { $items->links() }
+  <div class="card-body">
+    @if($items->count())
+      <div class="table-responsive">
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Type</th>
+              <th>License</th>
+              <th>Rights holder</th>
+              <th>Access rights</th>
+              <th>InstitutionID</th>
+              <th>CollectionID</th>
+              <th>Inst. Code</th>
+              <th>Coll. Code</th>
+              <th>Owner Inst.</th>
+              <th>Basis of record</th>
+              <th>Language</th>
+              <th>Modified</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+
+          @foreach($items as $row)
+            <tr>
+              <td>{{ $row->record_level_id }}</td>
+              <td>{{ $row->typeRef?->type_value }}</td>
+              <td>{{ $row->licenseRef?->license_value }}</td>
+              <td>{{ $row->rightsHolderRef?->rightsHolder_value }}</td>
+              <td>{{ $row->accessRightsRef?->accessrights_value }}</td>
+              <td>{{ $row->institutionIdRef?->institutionID_value }}</td>
+              <td> {{ $row->collectionIdRef?->collection_value }}</td>
+              <td>{{ $row->institutionCodeRef?->institutionCode_value }}</td>
+              <td>{{ $row->collectionCodeRef?->collectionCode_value }}</td>
+              <td>{{ $row->ownerInstitutionCodeRef?->ownerinstitutioncode_value }}</td>
+              <td>{{ $row->basisOfRecordRef?->basisofrecord_value }}</td>
+                            <td>{{ $row->language }}</td>
+              <td>{{ optional($row->modified)->format('Y-m-d H:i') }}</td>
+              <td class="text-nowrap">
+                <a href="{{ route('record-level.show',$row) }}" class="btn btn-sm btn-outline-secondary">Ver</a>
+                <a href="{{ route('record-level.edit',$row) }}" class="btn btn-sm btn-primary">Editar</a>
+                <form action="{{ route('record-level.destroy',$row) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar registro?')">
+                  @csrf @method('DELETE')
+                  <button class="btn btn-sm btn-danger">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+          @endforeach
+          </tbody>
+        </table>
+      </div>
+
+      @if ($items->hasPages())
+        <div class="mt-3">{{ $items->links() }}</div>
+      @endif
+    @else
+      <p class="mb-0">No hay registros.</p>
+    @endif
+  </div>
 </div>
 @endsection

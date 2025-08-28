@@ -2,14 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 /* use App\Http\Controllers\Web\IkiambioUserController as IkiambioUserWeb; */
-use App\Http\Controllers\Web\IkiambioUserController; 
 
 // Home
 Route::get('/', fn () => view('home'))->name('home');
 
-// CRUD ejemplo previo
+use App\Http\Controllers\Web\IkiambioUserController; 
 Route::resource('ikiambio-users', IkiambioUserController::class)
     ->parameters(['ikiambio-users' => 'ikiambioUser']);
+
+use App\Http\Controllers\Web\RecordLevelController;
+Route::resource('record-level', RecordLevelController::class)
+    ->parameters(['record-level' => 'recordLevel']);    
 
 // ===================== RECORD LEVEL =====================
 use App\Http\Controllers\Web\RecordLevel\TypeController;

@@ -39,6 +39,11 @@
 
         <div class="group-items">
 
+          <a class="item {{ request()->routeIs('record-level.*') ? 'active' : '' }}" href="{{ route('record-level.index') }}">
+            @include('svg.users')
+            <span>RECORD LEVEL BASE</span>
+          </a>
+
           {{-- ==================== RECORD LEVEL ==================== --}}
           <div class="group collapsible {{ request()->routeIs('vocab-record-level-*') ? 'open' : '' }}" data-key="record-level">
             <button class="group-header" type="button">

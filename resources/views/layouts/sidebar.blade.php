@@ -20,7 +20,7 @@
         <span>Usuarios</span>
       </a>
 
-      <span class="item {{ request()->routeIs('ikiambio-users.*') ? 'active' : '' }}" href="#">
+      <span class="item {{ request()->routeIs('users.*') ? 'active' : '' }}" href="#">
         @include('svg.users')
         <span>Registro vocabs</span>
       </span>

@@ -14,8 +14,8 @@ class IkiambioUserController extends Controller
 
     public function index()
     {
-        $items = IkiambioUser::orderByDesc('id')->paginate(15);
-        return view('pages.ikiambio-users.index', compact('items'));
+        $users = IkiambioUser::orderByDesc('id')->paginate(15);
+        return view('pages.ikiambio-users.index', compact('users'));
     }
 
     public function create()
@@ -29,7 +29,7 @@ class IkiambioUserController extends Controller
 
         try {
             $item = $this->tx(fn () => IkiambioUser::create($data));
-            return redirect()->route('ikiambio-users.index')->with('ok','Creado');
+            return redirect()->route('pages.ikiambio-users.index')->with('ok','Creado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo crear.')->withInput();
         }
@@ -51,7 +51,7 @@ class IkiambioUserController extends Controller
 
         try {
             $this->tx(fn () => $ikiambioUser->update($data));
-            return redirect()->route('ikiambio-users.index')->with('ok','Actualizado');
+            return redirect()->route('pages.ikiambio-users.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
         }

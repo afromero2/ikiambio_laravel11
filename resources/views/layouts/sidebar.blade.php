@@ -9,9 +9,10 @@
 <body class="app">
   {{-- Sidebar --}}
   <aside class="sidebar">
-    <div class="brand">
-      <img src="{{ asset('favicon.ico') }}" alt="logo" class="brand-logo">
-      <div class="brand-title">IKIMBIA</div>
+    <div class="brand"> 
+
+      @include('svg.salamander') <span>IKIAMBIA</span>
+
     </div>
 
     <nav class="menu">
@@ -31,7 +32,7 @@
       {{-- ==================== REGISTRO VOCABS (PADRE) ==================== --}}
       <div class="group collapsible {{ $vocabsOpen ? 'open' : '' }}" data-key="vocabs">
         <button class="group-header" type="button">
-           @include('svg.users')
+           @include('svg.list')
           <span>REGISTRO VOCABS</span>
           <span class="chev" aria-hidden="true"></span>
         </button>

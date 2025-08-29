@@ -7,6 +7,13 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Iniciar servicios ##
+Modo Development
+php artisan serve
+
+Se requiere tener levantado VITE en este caso con la versión v6.3.5 
+npm run dev
+
 ## About Laravel 1111111111111122222222
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

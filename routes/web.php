@@ -14,6 +14,11 @@ use App\Http\Controllers\Web\RecordLevelController;
 Route::resource('record-level', RecordLevelController::class)
     ->parameters(['record-level' => 'recordLevel']);    
 
+use App\Http\Controllers\Web\OccurrenceController;
+Route::resource('occurrence', OccurrenceController::class)
+    ->parameters(['occurrence' => 'occurrence']);
+
+
 // ===================== RECORD LEVEL =====================
 use App\Http\Controllers\Web\RecordLevel\TypeController;
 use App\Http\Controllers\Web\RecordLevel\LicenseController;

@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Identification extends Model
 {
-    protected $table = 'identification';
+    protected $table = 'identification';     // cambia si tu tabla se llama distinto
     protected $primaryKey = 'identificationID';
-    public $timestamps = false;
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $fillable = ['identificationQualifier', 'typeStatus', 'identifiedBy', 'dateIdentified', 'identificationVerificationStatus', 'identificationRemarks'];
+    public $timestamps = false;
+
+    protected $fillable = ['identificationID']; // agrega más campos si existen
 }

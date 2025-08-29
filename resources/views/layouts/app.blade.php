@@ -31,34 +31,3 @@
 </main>
 </body>
 </html>
-
-
-
-{{-- <!doctype html>
-<html lang="es" class="h-full bg-gray-50">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>@yield('title', config('app.name','IKIAMBIO'))</title>
-  @vite(['resources/css/app.css','resources/js/app.js'])
-</head>
-<body class="min-h-full text-gray-900">
-  <header class="bg-white shadow">
-    <div class="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between">
-      <a href="{{ route('ikiambio-users.index') }}" class="text-xl font-semibold">IKIAMBIO</a>
-      <nav class="flex gap-4">
-        <a class="text-sm text-gray-700 hover:text-indigo-600" href="{{ route('ikiambio-users.index') }}">Usuarios</a>
-        <a class="text-sm inline-flex items-center px-3 py-1.5 rounded-md bg-indigo-600 text-white hover:bg-indigo-700" href="{{ route('ikiambio-users.create') }}">Nuevo</a>
-      </nav>
-    </div>
-  </header>
-
-  <main class="mx-auto max-w-7xl px-4 py-8">
-    @if(session('ok'))
-      <div class="mb-6 rounded-md bg-green-50 p-4 text-green-800 border border-green-200">{{ session('ok') }}</div>
-    @endif
-    @yield('content')
-  </main>
-</body>
-</html>
- --}}

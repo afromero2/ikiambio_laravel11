@@ -9,13 +9,16 @@
 <body class="app">
   {{-- Sidebar --}}
   <aside class="sidebar">
-    <div class="brand"> 
-
+    <div class="brand brand--clickable" onclick="location.href='{{ route('home') }}'"> 
       @include('svg.salamander') <span>IKIAMBIA</span>
-
     </div>
 
     <nav class="menu">
+
+        <a class="item {{ request()->routeIs('occurrence.*') ? 'active' : '' }}" href="{{ route('occurrence.index') }}">
+            @include('svg.users')
+            <span>OCCURRENCE BASE</span>
+          </a>
       
       @php
         $vocabsOpen =
@@ -237,5 +240,6 @@
       @yield('content')
     </main>
   </section>
+  @stack('scripts')
 </body>
 </html>

@@ -8,8 +8,14 @@ class Organism extends Model
 {
     protected $table = 'organism';
     protected $primaryKey = 'organismID';
-    public $timestamps = false;
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $fillable = ['associatedOccurrences', 'associatedOrganisms', 'previousIdentifications'];
+    public $timestamps = false;
+
+    protected $fillable = [
+        'organismID',
+        'associatedOccurrences',
+        'associatedOrganisms',
+        'previousIdentifications',
+    ];
 }

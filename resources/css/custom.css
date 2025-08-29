@@ -39,6 +39,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-s
 
 .alert{padding:10px 12px;border-radius:8px;border:1px solid #bbf7d0;background:#ecfdf5;color:#065f46}
 
+.brand--clickable { cursor: pointer; }
 
 /*****************************************************************************************************/
 
@@ -139,3 +140,4 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-s
   background:rgba(255,255,255,.25);
   border-radius:8px;
 }
+

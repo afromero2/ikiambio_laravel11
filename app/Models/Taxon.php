@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Taxon extends Model
 {
-    protected $table = 'taxon';
+    protected $table = 'taxon';        // cambia si tu tabla se llama distinto
     protected $primaryKey = 'taxonID';
-    public $timestamps = false;
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $fillable = ['scientificNameID', 'scientificName', 'namePublishedIn', 'namePublishedInYear', 'higherClassification', 'kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'subgenus', 'specificEpithet', 'intraspecificEpithet', 'taxonRank', 'verbatimTaxonRank', 'scientificNameAuthorship', 'vernacularName', 'taxonomicStatus', 'taxonRemarks'];
+    public $timestamps = false;
+
+    protected $fillable = ['taxonID']; // agrega más campos si existen
 }
+
+

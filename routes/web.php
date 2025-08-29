@@ -165,3 +165,8 @@ Route::resource('tblprimersf', TblprimersfController::class)
 Route::resource('tblprimersr', TblprimersrController::class)
     ->names('tblprimersr')
     ->parameters(['tblprimersr' => 'tblprimersr']); */
+/* use Illuminate\Support\Facades\Route; */
+
+Route::get('/occurrence', function () {
+    return view('occurrence');
+});
